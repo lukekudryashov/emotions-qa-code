@@ -1,0 +1,100 @@
+---
+title: "Support Needs and Semtypes Analysis"
+output:
+  word_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+**Distribution of named entities categories in question focus
+Across emotional and non-emotional consumer questions**
+
+```{r load data}
+library('plyr')
+library('dplyr')
+library('readr')
+
+#import CSV as data frame
+em_df <- read_csv("/Users/luke/Desktop/metamap/public_mm_lite/semtype_counts_with_repeats_em.csv") 
+nonem_df <- read_csv("/Users/luke/Desktop/metamap/public_mm_lite/semtype_counts_with_repeats_nonem.csv")
+inf_df <- read_csv("/Users/luke/Desktop/metamap/public_mm_lite/semtype_counts_with_repeats_inf.csv") 
+noninf_df <- read_csv("/Users/luke/Desktop/metamap/public_mm_lite/semtype_counts_with_repeats_noninf.csv") 
+
+#rename "count" column to "count_focus", add corresponding type
+colnames(em_df)[which(names(em_df) == "count")] <- "count_focus"
+colnames(nonem_df)[which(names(nonem_df) == "count")] <- "count_focus"
+colnames(inf_df)[which(names(inf_df) == "count")] <- "count_focus"
+colnames(noninf_df)[which(names(noninf_df) == "count")] <- "count_focus"
+
+#add support needs type column
+em_df <- em_df %>% mutate(support_needs='emotional')
+nonem_df <- nonem_df %>% mutate(support_needs='not emotional')
+inf_df <- inf_df %>% mutate(support_needs='informational')
+noninf_df <- noninf_df %>% mutate(support_needs='not informational')
+
+#merge em and nonem, inf and noninf dfs
+emotional_df <- rbind(em_df,nonem_df)
+informational_df <- rbind(inf_df,noninf_df)
+
+# replace NA with 0
+emotional_df[is.na(emotional_df)] <- 0
+informational_df[is.na(informational_df)] <- 0
+
+#get top 10 semtypes by count focus
+top10_em_df <- em_df %>% top_n(10, count_focus)
+top10_nonem_df <- nonem_df %>% top_n(10, count_focus)
+top10_inf_df <- inf_df %>% top_n(10, count_focus)
+top10_noninf_df <- noninf_df %>% top_n(10, count_focus)
+top10_inf_df
+top10_noninf_df
+
+#subset dfs to include only top 10 semtypes from each category (11 total because of difference between em/nonem and inf/noninf sortings)
+top10_emotional_df <- filter(emotional_df, semtype_code == "bpoc" | semtype_code == "dsyn" | semtype_code == "fndg" | semtype_code == "ftcn" | semtype_code == "inpr" | semtype_code == "mobd" | semtype_code == "phsu" | semtype_code == "qlco" | semtype_code == "sosy" | semtype_code == "tmco" | semtype_code == "topp")
+top10_informational_df <- filter(informational_df, semtype_code == "bpoc" | semtype_code == "dsyn" | semtype_code == "fndg" | semtype_code == "ftcn" | semtype_code == "inpr" | semtype_code == "mobd" | semtype_code == "phsu" | semtype_code == "qlco" | semtype_code == "sosy" | semtype_code == "tmco" | semtype_code == "topp")
+
+#view data frames
+emotional_df
+informational_df
+
+```
+
+
+```{r question focus distribution}
+library("ggplot2")
+library("stringr")
+
+# stacked barplot emotional
+top10_emotional_df %>% 
+  ggplot() + aes(y=reorder(semtype_name, count_focus), x=count_focus,fill=support_needs)+
+  geom_col() +
+    labs(title=str_wrap("Focus Semtype by Support Need (Emotional)", 20),y="semtype",x="focus semtype count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+# side by side barplot emotional
+top10_emotional_df %>% 
+  ggplot() + aes(y=reorder(semtype_name, count_focus), x=count_focus,fill=support_needs)+
+  geom_col(position=position_dodge()) +
+    labs(title=str_wrap("Focus Semtype by Support Need (Emotional)", 20),y="semtype",x="focus semtype count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+# stacked barplot informational
+top10_informational_df %>% 
+  ggplot() + aes(y=reorder(semtype_name, count_focus), x=count_focus,fill=support_needs)+
+  geom_col() +
+    labs(title=str_wrap("Focus Semtype by Support Need (Informational)", 20),y="semtype",x="focus semtype count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+# side by side barplot informational
+top10_informational_df %>% 
+  ggplot() + aes(y=reorder(semtype_name, count_focus), x=count_focus,fill=support_needs)+
+  geom_col(position=position_dodge()) +
+    labs(title=str_wrap("Focus Semtype by Support Need (Informational)", 20),y="semtype",x="focus semtype count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+```

@@ -1,0 +1,325 @@
+---
+title: "Emotions and Semtypes Analysis"
+output:
+  word_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+
+```{r load data}
+library('plyr')
+library('dplyr')
+library('readr')
+
+#import CSV as data frame
+df <- read_csv("/Users/luke/Desktop/metamap/public_mm_lite/semtype_counts_with_repeats.csv") 
+
+#rename "count" column to "count_focus"
+colnames(df)[which(names(df) == "count")] <- "count_focus"
+
+#view data frame
+df
+
+```
+
+
+```{r wordclouds}
+library("wordcloud")
+library("RColorBrewer")
+
+# replace NA with 0
+df[is.na(df)] <- 0
+
+set.seed(1234)
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Focus Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_focus, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Emotion Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_emotion, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Sadness Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_sadness, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Joy Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_joy, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Fear Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_fear, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Anger Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_anger, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Surprise Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_surprise, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Disgust Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_disgust, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Trust Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_trust, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Anticipation Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_anticipation, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Confusion Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_confusion, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Denial Cause Semtypes")
+wordcloud(words = df$semtype_name, freq = df$count_denial, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+```
+
+```{r import semgroup count data}
+#import CSV as data frame
+semgroup_df <- read_csv("/Users/luke/Desktop/metamap/public_mm_lite/semgroup_counts.csv") 
+
+#rename "count" column to "count_focus"
+colnames(semgroup_df)[which(names(semgroup_df) == "count")] <- "count_focus"
+
+#view data frame
+semgroup_df
+```
+```{r semgroup wordclouds}
+
+# replace NA with 0
+semgroup_df[is.na(semgroup_df)] <- 0
+
+set.seed(1234)
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Focus Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_focus, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Emotion Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_emotion, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Sadness Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_sadness, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Joy Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_joy, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Fear Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_fear, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Anger Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_anger, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Surprise Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_surprise, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Disgust Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_disgust, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Trust Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_trust, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Anticipation Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_anticipation, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Confusion Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_confusion, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Denial Cause Semgroups")
+wordcloud(words = semgroup_df$group_name, freq = semgroup_df$count_denial, min.freq = 3,
+          max.words=Inf, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+```
+```{r plot semtype and emotion classes}
+library('ggplot2')
+
+df %>% 
+  top_n(10, count_focus) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_focus), count_focus) + geom_col() +
+  labs(title="Focus Count by Semtype",x="semtype",y="focus count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_sadness) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_sadness), count_sadness) + geom_col() +
+  labs(title="Sadness Count by Semtype",x="semtype",y="sadness count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_joy) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_joy), count_joy) + geom_col() +
+  labs(title="Joy Count by Semtype",x="semtype",y="joy count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_fear) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_fear), count_fear) + geom_col() +
+  labs(title="Fear Count by Semtype",x="semtype",y="fear count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_anger) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_anger), count_anger) + geom_col() +
+  labs(title="Anger Count by Semtype",x="semtype",y="anger count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_surprise) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_surprise), count_surprise) + geom_col() +
+  labs(title="Surprise Count by Semtype",x="semtype",y="surprise count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_disgust) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_disgust), count_disgust) + geom_col() +
+  labs(title="Disgust Count by Semtype",x="semtype",y="disgust count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_trust) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_trust), count_trust) + geom_col() +
+  labs(title="Focus Trust by Semtype",x="semtype",y="trust count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_focus) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_anticipation), count_anticipation) + geom_col() +
+  labs(title="Anticipation Count by Semtype",x="semtype",y="anticipation count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_confusion) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_confusion), count_confusion) + geom_col() +
+  labs(title="Confusion Count by Semtype",x="semtype",y="confusion count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+df %>% 
+  top_n(10, count_denial) %>% 
+  ggplot() + aes(reorder(semtype_name, -count_denial), count_denial) + geom_col() +
+  labs(title="Denial Count by Semtype",x="semtype",y="denial count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+```
+Notes: wordcloud of concepts (filter out excluded semtypes)
+trace 2-3 levels up 

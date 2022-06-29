@@ -1,0 +1,437 @@
+---
+title: "Emotions and Support Needs - Descriptive Analysis"
+output:
+  word_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r load data}
+library('plyr')
+library('dplyr')
+library('readr')
+
+#import and merge all CSV files into one data frame
+df <- list.files(path='/Users/luke/Desktop/emotions_data', pattern = "*.csv", full.names = TRUE) %>%
+  lapply(read_csv) %>%
+  bind_rows
+
+#view data frame
+df
+
+```
+```{r clean up}
+# remove the write-in entry for cleaner visualizations
+df <- df %>%
+  mutate(gender = replace(gender,gender=='(even though Lindsey is a female name, I am not sure about the gender)', NA))
+```
+
+
+```{r descriptive - age, gender}
+library(ggplot2)
+
+subset(df, !is.na(age))
+subset(df, !is.na(gender))
+
+g <- ggplot(data=subset(df, !is.na(age)), aes(age))
+g + geom_bar() + 
+  labs(title="Age Bar Chart") + 
+  theme(axis.text.x = element_text(angle=65, vjust=0.6))
+
+g <- ggplot(data=subset(df, !is.na(gender)), aes(gender))
+g + geom_bar() + 
+  labs(title="Gender Bar Chart") + 
+  theme(axis.text.x = element_text(angle=65, vjust=0.6))
+```
+198/1500 questions have known age
+431/1500 questions have known gender
+
+```{r set up for correlation of support needs}
+#simplify df for correlation analysis
+cor_df <- df %>%
+  mutate(informational_support = replace(informational_support,!is.na(informational_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(informational_support = replace(informational_support,is.na(informational_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(emotional_support = replace(emotional_support,!is.na(emotional_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(emotional_support = replace(emotional_support,is.na(emotional_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(esteem_support = replace(esteem_support,!is.na(esteem_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(esteem_support = replace(esteem_support,is.na(esteem_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(tangible_support = replace(tangible_support,!is.na(tangible_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(tangible_support = replace(tangible_support,is.na(tangible_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(network_support = replace(network_support,!is.na(network_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(network_support = replace(network_support,is.na(network_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(other_support = replace(other_support,!is.na(other_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(other_support = replace(other_support,is.na(other_support), "no"))
+```
+
+
+```{r plot age and support needs}
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = informational_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = emotional_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = esteem_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = esteem_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = tangible_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = network_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = other_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+```{r correlation of age with support needs}
+library('vcd')
+
+cat("Age and Informational Support\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$informational_support))
+cat("\n\nAge and Emotional Support\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$emotional_support))
+cat("\n\nAge and Esteem Support\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$esteem_support))
+cat("\n\nAge and Tangible Support\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$tangible_support))
+cat("\n\nAge and Network Support\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$network_support))
+```
+
+Weak associations between age and support needs
+
+```{r set up for correlation of emotion classes}
+#simplify df for correlation analysis
+cor_df <- cor_df %>%
+  mutate(sadness_support = replace(sadness_support,!is.na(sadness_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(sadness_support = replace(sadness_support,is.na(sadness_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(joy_support = replace(joy_support,!is.na(joy_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(joy_support = replace(joy_support,is.na(joy_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(fear_support = replace(fear_support,!is.na(fear_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(fear_support = replace(fear_support,is.na(fear_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(anger_support = replace(anger_support,!is.na(anger_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(anger_support = replace(anger_support,is.na(anger_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(surprise_support = replace(surprise_support,!is.na(surprise_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(surprise_support = replace(surprise_support,is.na(surprise_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(disgust_support = replace(disgust_support,!is.na(disgust_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(disgust_support = replace(disgust_support,is.na(disgust_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(trust_support = replace(trust_support,!is.na(trust_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(trust_support = replace(trust_support,is.na(trust_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(anticipation_support = replace(anticipation_support,!is.na(anticipation_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(anticipation_support = replace(anticipation_support,is.na(anticipation_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(confusion_support = replace(confusion_support,!is.na(confusion_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(confusion_support = replace(confusion_support,is.na(confusion_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(denial_support = replace(denial_support,!is.na(denial_support), "yes"))
+
+cor_df <- cor_df %>%
+  mutate(denial_support = replace(denial_support,is.na(denial_support), "no"))
+
+cor_df <- cor_df %>%
+  mutate(neutral = replace(neutral,is.na(neutral), "no"))
+```
+
+```{r plot age and emotion classes}
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = sadness_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = joy_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = fear_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = anger_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = surprise_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = disgust_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = trust_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = anticipation_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = confusion_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = denial_support)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = neutral)) +
+  geom_bar() +
+  labs(x = "age") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+
+```{r correlation of age with emotion classes}
+cat("Age and Sadness\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$sadness_support))
+cat("\n\nAge and Joy\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$joy_support))
+cat("\n\nAge and Fear\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$fear_support))
+cat("\n\nAge and Anger\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$anger_support))
+cat("\n\nAge and Surprise\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$surprise_support))
+cat("\n\nAge and Disgust\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$disgust_support))
+cat("\n\nAge and Distrust\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$trust_support))
+cat("\n\nAge and Anticipation\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$anticipation_support))
+cat("\n\nAge and Confusion\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$confusion_support))
+cat("\n\nAge and Denial\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$denial_support))
+cat("\n\nAge and Neutral Emotion\n\n")
+assocstats(xtabs(~cor_df$age + cor_df$neutral))
+```
+
+Weak associations between age and support needs (joy is the strongest)
+
+```{r plot gender and support needs}
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = informational_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = emotional_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = esteem_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = esteem_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = tangible_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = network_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = other_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+
+```{r correlation of gender with support needs}
+cat("Gender and Informational Support\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$informational_support))
+cat("\n\nGender and Emotional Support\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$emotional_support))
+cat("\n\nGender and Esteem Support\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$esteem_support))
+cat("\n\nGender and Tangible Support\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$tangible_support))
+cat("\n\nGender and Network Support\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$network_support))
+```
+
+Weak/no correlation between gender and support needs
+
+```{r plot gender and emotion classes}
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = sadness_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = joy_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = fear_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = anger_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = surprise_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = disgust_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = trust_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = anticipation_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = confusion_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = denial_support)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(data=subset(cor_df, !is.na(gender)), aes(x = gender, fill = neutral)) +
+  geom_bar() +
+  labs(x = "gender") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+
+```{r correlation of gender with emotion classes}
+cat("Gender and Sadness\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$sadness_support))
+cat("\n\nGender and Joy\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$joy_support))
+cat("\n\nGender and Fear\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$fear_support))
+cat("\n\nGender and Anger\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$anger_support))
+cat("\n\nGender and Surprise\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$surprise_support))
+cat("\n\nGender and Disgust\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$disgust_support))
+cat("\n\nGender and Trust\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$trust_support))
+cat("\n\nGender and Anticipation\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$anticipation_support))
+cat("\n\nGender and Confusion\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$confusion_support))
+cat("\n\nGender and Denial\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$denial_support))
+cat("\n\nGender and Neutral Emotion\n\n")
+assocstats(xtabs(~cor_df$gender + cor_df$neutral))
+```
+
+Weak/ no correlation between gender and emotion classes
+
