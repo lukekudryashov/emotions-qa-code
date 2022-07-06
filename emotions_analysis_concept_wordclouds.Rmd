@@ -1,0 +1,272 @@
+---
+title: "Emotions and Concepts Analysis"
+output:
+  word_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+
+```{r load data}
+library('plyr')
+library('dplyr')
+library('readr')
+
+#import CSV as data frame
+df <- read_csv("/Users/luke/Desktop/metamap/public_mm_lite/concept_counts.csv") 
+
+#rename "count" column to "count_focus"
+colnames(df)[which(names(df) == "count")] <- "count_focus"
+
+#view data frame
+df
+
+```
+
+
+```{r wordclouds}
+library("wordcloud")
+library("RColorBrewer")
+
+# replace NA with 0
+df[is.na(df)] <- 0
+
+set.seed(1234)
+
+#layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+#par(mar=rep(0, 4))
+#dev.new(width=1000,height=1000,unit='px')
+#plot.new()
+#text(x=0.5, y=0.5, "Focus Concepts")
+png("focus_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_focus, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+
+```{r}
+set.seed(1234)
+
+png("emotion_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_emotion, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+
+```{r}
+set.seed(1234)
+
+png("sadness_wordcloud_concepts.png", width=14,height=14, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_sadness, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+
+```{r}
+set.seed(1234)
+
+png("joy_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_joy, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r}
+set.seed(1234)
+
+png("fear_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_fear, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r}
+set.seed(1234)
+
+png("anger_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_anger, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r}
+set.seed(1234)
+
+png("surprise_wordcloud_concepts.png", width=13,height=13, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_surprise, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r}
+set.seed(1234)
+
+png("disgust_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_disgust, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r}
+set.seed(1234)
+
+png("trust_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_trust, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r}
+set.seed(1234)
+
+png("anticipation_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_anticipation, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r}
+set.seed(1234)
+
+png("confusion_wordcloud_concepts.png", width=13,height=13, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_confusion, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r}
+set.seed(1234)
+
+png("denial_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+wordcloud(words = df$concept_name, freq = df$count_denial, min.freq = 3,
+          max.words=50, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"),scale=c(4,0.2))
+```
+
+```{r plot concept and emotion classes}
+library('ggplot2')
+
+dev.new()
+
+df %>% 
+  top_n(10, count_focus) %>% 
+  ggplot() + aes(reorder(concept_name, count_focus), count_focus) + geom_col() +
+  labs(title="Focus Count by Concept",x="concept",y="focus count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_emotion) %>% 
+  ggplot() + aes(reorder(concept_name, count_emotion), count_emotion) + geom_col() +
+  labs(title="Emotion Count by Concept",x="concept",y="emotion count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_sadness) %>% 
+  ggplot() + aes(reorder(concept_name, count_sadness), count_sadness) + geom_col() +
+  labs(title="Sadness Count by Concept",x="concept",y="sadness count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_joy) %>% 
+  ggplot() + aes(reorder(concept_name, count_joy), count_joy) + geom_col() +
+  labs(title="Joy Count by Concept",x="concept",y="joy count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_fear) %>% 
+  ggplot() + aes(reorder(concept_name, count_fear), count_fear) + geom_col() +
+  labs(title="Fear Count by Concept",x="concept",y="fear count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_anger) %>% 
+  ggplot() + aes(reorder(concept_name, count_anger), count_anger) + geom_col() +
+  labs(title="Anger Count by Concept",x="concept",y="anger count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_surprise) %>% 
+  ggplot() + aes(reorder(concept_name, count_surprise), count_surprise) + geom_col() +
+  labs(title="Surprise Count by Concept",x="concept",y="surprise count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_disgust) %>% 
+  ggplot() + aes(reorder(concept_name, count_disgust), count_disgust) + geom_col() +
+  labs(title="Disgust Count by Concept",x="concept",y="disgust count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_trust) %>% 
+  ggplot() + aes(reorder(concept_name, count_trust), count_trust) + geom_col() +
+  labs(title="Focus Trust by Concept",x="concept",y="trust count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_anticipation) %>% 
+  ggplot() + aes(reorder(concept_name, count_anticipation), count_anticipation) + geom_col() +
+  labs(title="Anticipation Count by Concept",x="concept",y="anticipation count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_confusion) %>% 
+  ggplot() + aes(reorder(concept_name, count_confusion), count_confusion) + geom_col() +
+  labs(title="Confusion Count by Concept",x="concept",y="confusion count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+df %>% 
+  top_n(10, count_denial) %>% 
+  ggplot() + aes(reorder(concept_name, count_denial), count_denial) + geom_col() +
+  labs(title="Denial Count by Concept",x="concept",y="denial count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + coord_flip()
+
+```
+
+
+```{r comparison cloud - emotions}
+library(dplyr)
+library(tidyr)
+library(wordcloud)
+library(reshape2)
+library(tm)
+
+emotions_df <- df[c("concept_name","count_sadness","count_joy","count_fear","count_anger","count_surprise","count_disgust","count_trust","count_anticipation","count_confusion","count_denial")]
+
+emotions_df <- emotions_df %>% 
+  gather("Origin","Freq",c(2,3,4,5,6,7,8,9,10,11)) %>% 
+  acast(concept_name~Origin,fill=0,value.var = "Freq")
+
+colnames(emotions_df) <- c("sadness","joy","fear","anger","surprise","disgust","trust","anticipation","confusion","denial")
+
+#png("comparison_cloud_top_500_words.png", width = 480, height = 480)
+png("emotions_comparison_wordcloud_concepts.png", width=35,height=35, units='in', res=200)
+#dev.new(width = 2000, height = 2000, unit = "px")
+comparison.cloud(emotions_df, max.words=200, random.order=FALSE,c(4,0.2), colors=c("#6929c4","#1192e8","#005d5d","#9f1853","#fa4d56","#570408","#198038","#002d9c","#ee538b","#b28600"),match.colors=TRUE)
+```
+
+
+```{r comparison cloud - emotions vs focus}
+focus_emotions_df <- df[c("concept_name","count_focus","count_emotion")]
+
+focus_emotions_df <- focus_emotions_df %>% 
+  gather("Origin","Freq",c(2,3)) %>% 
+  acast(concept_name~Origin,fill=0,value.var = "Freq")
+
+colnames(focus_emotions_df) <- c("focus","emotion")
+
+#png("comparison_cloud_top_500_words.png", width = 480, height = 480)
+png("focus_emotions_comparison_wordcloud_concepts.png", width=12,height=12, units='in', res=200)
+#dev.new(width = 2000, height = 2000, unit = "px")
+comparison.cloud(focus_emotions_df, max.words=50, random.order=FALSE,c(4,0.2), colors=c("#6929c4","#1192e8"),match.colors=TRUE)
+
+
+```

@@ -91,6 +91,12 @@ cor_df <- cor_df %>%
   mutate(other_support = replace(other_support,is.na(other_support), "no"))
 ```
 
+```{r}
+cor_df
+cor_df[c("idx")]
+
+```
+
 
 ```{r plot age and support needs}
 ggplot(data=subset(cor_df, !is.na(age)), aes(x = age, fill = informational_support)) +
@@ -435,3 +441,35 @@ assocstats(xtabs(~cor_df$gender + cor_df$neutral))
 
 Weak/ no correlation between gender and emotion classes
 
+
+```{r}
+cor_df[cor_df == "yes"] <- "1"
+cor_df[cor_df == "no"] <- "0"
+
+new_cor_df <- cor_df[c("sadness_support","joy_support","fear_support","anger_support","surprise_support","disgust_support","trust_support","anticipation_support","confusion_support","denial_support","informational_support","emotional_support","esteem_support","tangible_support","network_support","other_support")]
+
+#jaccard <- function(M, col1, col2) {
+#  sums = rowSums(M[,c(col1, col2)])
+
+#  similarity = length(sums[sums==2])
+#  total = length(sums[sums==1]) + similarity
+  
+#  similarity/total
+#}
+
+```
+
+```{r}
+cor_m <- data.matrix(new_cor_df)
+cor_m <- cor_m-1
+cor_m
+```
+
+
+```{r}
+library(proxy)
+
+simil(cor_m, by_rows = FALSE, method = "Jaccard")
+```
+
+Most are independent, slight correlation between emotional support and sadness (.35), emotional support and fear (.33), informational support and fear (.31), emotional support and informational support (.31).

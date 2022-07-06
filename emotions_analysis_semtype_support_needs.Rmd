@@ -98,3 +98,21 @@ top10_informational_df %>%
   theme(axis.text.x = element_text(angle=90, vjust=0.6))
 
 ```
+```{r emotion trigger distribution}
+library("ggplot2")
+
+# stacked barplot emotional
+top10_emotional_df %>% 
+  ggplot() + aes(y=reorder(semtype_name, count_focus), x=count_focus,fill=support_needs)+
+  geom_col() +
+    labs(title="Focus Semtype across Emotional and Non-emotional Support Needs",y="semtype",x="focus semtype count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+# side by side barplot emotional
+top10_emotional_df %>% 
+  ggplot() + aes(y=reorder(semtype_name, count_focus), x=count_focus,fill=support_needs)+
+  geom_col(position=position_dodge()) +
+    labs(title="Focus Semtype across Emotional and Non-emotional Support Needs",y="semtype",x="focus semtype count") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))
+
+```
